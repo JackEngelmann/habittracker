@@ -3,7 +3,7 @@ import { TYPES } from "./types";
 import { Database } from "./usecase/port/Database";
 import { SqliteDatabase } from "./adapter/database/SqliteDatabase";
 import { QueryBuilder } from "./details/QueryBuilder";
-import { SqliteQueryBuilder } from "./details/sqlite/SqliteQueryBuilder";
+import { SqliteQueryBuilder } from "./adapter/database/SqliteQueryBuilder";
 import { HabitRepository } from "./usecase/port/HabitRepository";
 import { SqliteHabitRepository } from "./adapter/database/SqliteHabitRepository";
 import { CreateHabit } from "./usecase/createHabit";

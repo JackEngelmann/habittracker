@@ -1,22 +1,19 @@
 import { Habit } from "../../domain/entity/Habit";
 import { Database } from "../../usecase/port/Database";
 import { HabitRepository } from "../../usecase/port/HabitRepository";
-import { QueryBuilder } from "../../details/QueryBuilder";
 import { Id } from "../../domain/entity/Id";
 import { injectable, inject } from "inversify";
 import { TYPES } from "../../types";
+import { createSqliteQueryBuilder } from "./SqliteQueryBuilder";
 
 const TABLE_NAME = "habit";
 
 @injectable()
 export class SqliteHabitRepository implements HabitRepository {
-  constructor(
-    @inject(TYPES.Database) private db: Database,
-    @inject(TYPES.QueryBuilder) private queryBuilder: QueryBuilder
-  ) {}
+  constructor(@inject(TYPES.Database) private db: Database) {}
 
   async get(id: Id): Promise<Habit> {
-    const query = this.queryBuilder
+    const query = createSqliteQueryBuilder()
       .table(TABLE_NAME)
       .where("id = :id", { id })
       .selectOne();
@@ -30,7 +27,7 @@ export class SqliteHabitRepository implements HabitRepository {
   }
 
   async add(habit: Habit): Promise<number> {
-    const query = this.queryBuilder
+    const query = createSqliteQueryBuilder()
       .table(TABLE_NAME)
       .values({
         title: habit.title,
@@ -42,7 +39,7 @@ export class SqliteHabitRepository implements HabitRepository {
   }
 
   async update(habit: Habit): Promise<void> {
-    const query = this.queryBuilder
+    const query = createSqliteQueryBuilder()
       .table(TABLE_NAME)
       .set({
         title: habit.title,
@@ -54,7 +51,15 @@ export class SqliteHabitRepository implements HabitRepository {
   }
 
   async getAll(): Promise<Habit[]> {
-    const query = this.queryBuilder.table(TABLE_NAME).select();
+    const query = createSqliteQueryBuilder().table(TABLE_NAME).select();
+    return this.db.executeQuery(query);
+  }
+
+  public async delete(id: number): Promise<void> {
+    const query = createSqliteQueryBuilder()
+      .table(TABLE_NAME)
+      .where("id = :id", { id })
+      .delete();
     return this.db.executeQuery(query);
   }
 }

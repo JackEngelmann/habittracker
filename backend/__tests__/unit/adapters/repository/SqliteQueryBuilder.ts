@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { SqliteQueryBuilder } from "../../../../src/details/sqlite/SqliteQueryBuilder";
+import { SqliteQueryBuilder } from "../../../../src/adapter/database/SqliteQueryBuilder";
 
 test("build select", () => {
   const query = new SqliteQueryBuilder().table("table").selectOne();
@@ -42,4 +42,13 @@ test("build update", () => {
   expect(query.rawSqlCommand).toBe(
     "UPDATE table SET column1 = 'value1', column2 = 2 WHERE id = 3"
   );
+});
+
+test("build delete", () => {
+  const query = new SqliteQueryBuilder()
+    .table("table")
+    .where("id = :id", { id: 3 })
+    .delete();
+
+  expect(query.rawSqlCommand).toBe("DELETE FROM table WHERE id = 3");
 });

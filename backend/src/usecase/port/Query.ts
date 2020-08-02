@@ -3,6 +3,7 @@ export enum QueryType {
   SelectOne,
   Select,
   Update,
+  Delete,
 }
 
 export class Query {

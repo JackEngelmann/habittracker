@@ -31,6 +31,7 @@ export class SqliteDatabase implements Database {
       [QueryType.Select]: this.select,
       [QueryType.InsertOne]: this.insertOne,
       [QueryType.Update]: this.update,
+      [QueryType.Delete]: this.delete,
     };
     const handleQuery = queryHandlerByQueryType[query.type].bind(this);
     return handleQuery(query);
@@ -64,6 +65,10 @@ export class SqliteDatabase implements Database {
   }
 
   private async update(query: Query): Promise<void> {
+    this.run(query.rawSqlCommand);
+  }
+
+  private async delete(query: Query): Promise<void> {
     this.run(query.rawSqlCommand);
   }
 

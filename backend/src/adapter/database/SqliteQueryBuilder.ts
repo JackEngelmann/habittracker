@@ -1,8 +1,6 @@
 import { QueryBuilder } from "../QueryBuilder";
 import { Query, QueryType } from "../../usecase/port/Query";
-import { injectable } from "inversify";
 
-@injectable()
 export class SqliteQueryBuilder implements QueryBuilder {
   private tableName: string | undefined;
   private whereClause: string;
@@ -83,6 +81,11 @@ export class SqliteQueryBuilder implements QueryBuilder {
     const rawSqlCommand = `SELECT * FROM ${this.tableName}${this.whereClause}`;
     return new Query(rawSqlCommand, QueryType.Select);
   }
+
+  delete(): Query {
+    const rawSqlCommand = `DELETE FROM ${this.tableName}${this.whereClause}`;
+    return new Query(rawSqlCommand, QueryType.Delete);
+  }
 }
 
 function wrapValue(value: number | string) {
@@ -91,3 +94,5 @@ function wrapValue(value: number | string) {
   }
   return value;
 }
+
+export const createSqliteQueryBuilder = () => new SqliteQueryBuilder();

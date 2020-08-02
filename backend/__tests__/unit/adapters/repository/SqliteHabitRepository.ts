@@ -1,14 +1,13 @@
 import "reflect-metadata";
 import { SqliteDatabase } from "../../../../src/adapter/database/SqliteDatabase";
 import { SqliteHabitRepository } from "../../../../src/adapter/database/SqliteHabitRepository";
-import { SqliteQueryBuilder } from "../../../../src/details/sqlite/SqliteQueryBuilder";
 import { Habit } from "../../../../src/domain/entity/Habit";
+import { buildHabit } from "../../HabitBuilder";
 
 async function initializeTest() {
   const database = new SqliteDatabase();
-  const queryBuilder = new SqliteQueryBuilder();
   await database.createSchema();
-  const repository = new SqliteHabitRepository(database, queryBuilder);
+  const repository = new SqliteHabitRepository(database);
   return { repository };
 }
 
@@ -93,5 +92,23 @@ test("get all", async (done) => {
   const habitFromRepository2 = result.find((h) => h.id === id2);
   expect(habitFromRepository2).toBeDefined();
   expect(habitFromRepository2?.title).toBe(habit2.title);
+  done();
+});
+
+test("delete habit", async (done) => {
+  const { repository } = await initializeTest();
+  const habit1 = buildHabit().build();
+  const habit2 = buildHabit().build();
+  const id1 = await repository.add(habit1);
+  const id2 = await repository.add(habit2);
+
+  // act
+  await repository.delete(id1);
+  const result = await repository.getAll();
+
+  // assert
+  expect(result).toHaveLength(1);
+
+  expect(result[0].id).toBe(id2);
   done();
 });

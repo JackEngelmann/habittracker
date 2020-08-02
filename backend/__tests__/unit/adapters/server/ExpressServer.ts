@@ -4,7 +4,7 @@ import { CreateHabit } from "../../../../src/usecase/createHabit";
 import { SqliteHabitRepository } from "../../../../src/adapter/database/SqliteHabitRepository";
 import { SqliteDatabase } from "../../../../src/adapter/database/SqliteDatabase";
 import { FindHabit } from "../../../../src/usecase/findHabit";
-import { SqliteQueryBuilder } from "../../../../src/details/sqlite/SqliteQueryBuilder";
+import { SqliteQueryBuilder } from "../../../../src/adapter/database/SqliteQueryBuilder";
 import supertest from "supertest";
 import { UpdateHabit } from "../../../../src/usecase/updateHabit";
 
