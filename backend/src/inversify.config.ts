@@ -2,8 +2,6 @@ import { Container } from "inversify";
 import { TYPES } from "./types";
 import { Database } from "./usecase/port/Database";
 import { SqliteDatabase } from "./adapter/database/SqliteDatabase";
-import { QueryBuilder } from "./details/QueryBuilder";
-import { SqliteQueryBuilder } from "./adapter/database/SqliteQueryBuilder";
 import { HabitRepository } from "./usecase/port/HabitRepository";
 import { SqliteHabitRepository } from "./adapter/database/SqliteHabitRepository";
 import { CreateHabit } from "./usecase/createHabit";
@@ -14,7 +12,6 @@ import { ExpressServer } from "./adapter/server/ExpressServer";
 
 const container = new Container();
 container.bind<Database>(TYPES.Database).to(SqliteDatabase).inSingletonScope();
-container.bind<QueryBuilder>(TYPES.QueryBuilder).to(SqliteQueryBuilder);
 container
   .bind<HabitRepository>(TYPES.HabitRepository)
   .to(SqliteHabitRepository);

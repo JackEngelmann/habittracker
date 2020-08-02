@@ -1,7 +1,6 @@
-import { QueryBuilder } from "../QueryBuilder";
 import { Query, QueryType } from "../../usecase/port/Query";
 
-export class SqliteQueryBuilder implements QueryBuilder {
+export class SqliteQueryBuilder {
   private tableName: string | undefined;
   private whereClause: string;
   private insertColumns: string;
@@ -15,7 +14,7 @@ export class SqliteQueryBuilder implements QueryBuilder {
     this.setClause = "";
   }
 
-  values(variables: Record<string, string | number>): QueryBuilder {
+  values(variables: Record<string, string | number>): SqliteQueryBuilder {
     let insertColumns = "(";
     let insertValues = "(";
     const entries = Object.entries(variables);
@@ -35,24 +34,24 @@ export class SqliteQueryBuilder implements QueryBuilder {
     return this;
   }
 
-  table(tableName: string): QueryBuilder {
+  table(tableName: string): SqliteQueryBuilder {
     this.tableName = tableName;
     return this;
   }
 
   where(
     whereExpression: string,
-    variables: Record<string, string>
-  ): QueryBuilder {
+    variables: Record<string, string | number>
+  ): SqliteQueryBuilder {
     Object.entries(variables).forEach((entry) => {
       const regExp = new RegExp(`:${entry[0]}`, "g");
-      whereExpression = whereExpression.replace(regExp, entry[1]);
+      whereExpression = whereExpression.replace(regExp, wrapValue(entry[1]));
     });
     this.whereClause = ` WHERE ${whereExpression}`;
     return this;
   }
 
-  set(variables: Record<string, string>): QueryBuilder {
+  set(variables: Record<string, string | number>): SqliteQueryBuilder {
     const entries = Object.entries(variables);
     const parts = entries.map(
       (entry) => `${entry[0]} = ${wrapValue(entry[1])}`
@@ -92,7 +91,7 @@ function wrapValue(value: number | string) {
   if (typeof value === "string") {
     return `'${value}'`;
   }
-  return value;
+  return value.toString();
 }
 
 export const createSqliteQueryBuilder = () => new SqliteQueryBuilder();
