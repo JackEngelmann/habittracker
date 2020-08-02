@@ -9,7 +9,7 @@ export type CreateHabitInput = {
 };
 
 export class CreateHabit {
-  habitRepository: HabitRepository;
+  private habitRepository: HabitRepository;
 
   constructor(habitRepository: HabitRepository) {
     this.habitRepository = habitRepository;

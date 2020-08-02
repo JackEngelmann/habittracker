@@ -3,7 +3,7 @@ import { Habit } from "../domain/entity/Habit";
 import { HabitRepository } from "./port/HabitRepository";
 
 export class FindHabit {
-  habitRepository: HabitRepository;
+  private habitRepository: HabitRepository;
 
   constructor(habitRepository: HabitRepository) {
     this.habitRepository = habitRepository;

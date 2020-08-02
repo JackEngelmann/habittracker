@@ -3,7 +3,7 @@ import { Database } from "../Database";
 import { Id } from "../../domain/entity/Id";
 import { Query, QueryType } from "../Query";
 
-const CREATE_SCHEMA_SCRIPT = `
+const CREATE_HABIT_TABLE_SQL = `
   CREATE TABLE IF NOT EXISTS habit (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title string NOT NULL,
@@ -20,58 +20,56 @@ export class SqliteDatabase implements Database {
   }
 
   async createSchema(): Promise<void> {
-    return new Promise((resolve) => {
-      this.database.run(CREATE_SCHEMA_SCRIPT, (err) => {
-        if (err) {
-          console.error(err);
-        }
-        resolve();
-      });
-    });
+    await this.run(CREATE_HABIT_TABLE_SQL);
   }
 
-  executeQuery(query: Query) {
-    if (query.type === QueryType.SelectOne) {
-      return this.selectOne(query.rawSqlCommand);
-    }
-    if (query.type === QueryType.Select) {
-      return this.select(query.rawSqlCommand);
-    }
-    if (query.type === QueryType.InsertOne) {
-      return this.insertOne(query.rawSqlCommand);
-    }
-    throw new Error("unrecognized query type");
+  public executeQuery(query: Query) {
+    const queryHandlerByQueryType = {
+      [QueryType.SelectOne]: this.selectOne,
+      [QueryType.Select]: this.select,
+      [QueryType.InsertOne]: this.insertOne,
+      [QueryType.Update]: this.update,
+    };
+    const handleQuery = queryHandlerByQueryType[query.type].bind(this);
+    return handleQuery(query);
   }
 
-  private async selectOne(sql: string): Promise<any> {
+  private async selectOne(query: Query): Promise<any> {
     return new Promise((resolve) => {
-      return this.database.all(sql, function (err, rows) {
-        if (err) {
-          console.error(err);
-        }
+      return this.database.all(query.rawSqlCommand, function (err, rows) {
+        if (err) console.error(err);
         resolve(rows[0]);
       });
     });
   }
 
-  private async select(rawSqlCommand: string): Promise<any[]> {
+  private async select(query: Query): Promise<any[]> {
     return new Promise((resolve) => {
-      this.database.all(rawSqlCommand, (err, rows) => {
-        if (err) {
-          console.error(err);
-        }
-        return resolve(rows);
+      this.database.all(query.rawSqlCommand, (err, rows) => {
+        if (err) console.error(err);
+        resolve(rows);
       });
     });
   }
 
-  private async insertOne(rawSqlCommand: string): Promise<Id> {
+  private async insertOne(query: Query): Promise<Id> {
     return new Promise((resolve) => {
-      this.database.run(rawSqlCommand, function (err) {
-        if (err) {
-          console.error(err);
-        }
-        return resolve(this.lastID);
+      this.database.run(query.rawSqlCommand, function (err) {
+        if (err) console.error(err);
+        resolve(this.lastID);
+      });
+    });
+  }
+
+  private async update(query: Query): Promise<void> {
+    this.run(query.rawSqlCommand);
+  }
+
+  private run(rawSqlCommand: string): Promise<void> {
+    return new Promise((resolve) => {
+      this.database.run(rawSqlCommand, (err) => {
+        if (err) console.error(err);
+        resolve();
       });
     });
   }

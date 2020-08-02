@@ -4,6 +4,7 @@ import { createExpressServer } from "../adapter/server/ExpressServer";
 import { SqliteDatabase } from "../details/sqlite/SqliteDatabase";
 import { SqliteQueryBuilder } from "../details/sqlite/SqliteQueryBuilder";
 import { SqliteHabitRepository } from "../adapter/database/SqliteHabitRepository";
+import { UpdateHabit } from "../usecase/updateHabit";
 
 const PORT = 3000;
 
@@ -12,6 +13,7 @@ const queryBuilder = new SqliteQueryBuilder();
 const habitRepository = new SqliteHabitRepository(database, queryBuilder);
 const createHabit = new CreateHabit(habitRepository);
 const findHabit = new FindHabit(habitRepository);
-const server = createExpressServer(createHabit, findHabit);
+const updateHabit = new UpdateHabit(habitRepository);
+const server = createExpressServer(createHabit, findHabit, updateHabit);
 
-database.createSchema().then(() => server.initialize(PORT));
+database.createSchema().then(() => server.listen(PORT));

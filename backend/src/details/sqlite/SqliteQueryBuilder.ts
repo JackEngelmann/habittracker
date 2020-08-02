@@ -6,11 +6,13 @@ export class SqliteQueryBuilder implements QueryBuilder {
   private whereClause: string;
   private insertColumns: string;
   private insertValues: string;
+  private setClause: string;
 
   constructor() {
     this.whereClause = "";
     this.insertColumns = "";
     this.insertValues = "";
+    this.setClause = "";
   }
 
   values(variables: Record<string, string | number>): QueryBuilder {
@@ -20,12 +22,7 @@ export class SqliteQueryBuilder implements QueryBuilder {
     entries.forEach((entry, entryIndex) => {
       insertColumns += entry[0];
       const value = entry[1];
-      if (typeof value === "string") {
-        insertValues += `'${value}'`;
-      } else {
-        insertValues += value;
-      }
-
+      insertValues += wrapValue(value);
       if (entryIndex < entries.length - 1) {
         insertColumns += ", ";
         insertValues += ", ";
@@ -55,6 +52,16 @@ export class SqliteQueryBuilder implements QueryBuilder {
     return this;
   }
 
+  set(variables: Record<string, string>): QueryBuilder {
+    const entries = Object.entries(variables);
+    const parts = entries.map(
+      (entry) => `${entry[0]} = ${wrapValue(entry[1])}`
+    );
+    const setClause = `SET ${parts.join(", ")}`;
+    this.setClause = setClause;
+    return this;
+  }
+
   selectOne(): Query {
     const rawSqlCommand = `SELECT * FROM ${this.tableName}${this.whereClause}`;
     return new Query(rawSqlCommand, QueryType.SelectOne);
@@ -64,4 +71,16 @@ export class SqliteQueryBuilder implements QueryBuilder {
     const rawSqlCommand = `INSERT INTO ${this.tableName} ${this.insertColumns} VALUES ${this.insertValues}`;
     return new Query(rawSqlCommand, QueryType.InsertOne);
   }
+
+  update(): Query {
+    const rawSqlCommand = `UPDATE ${this.tableName} ${this.setClause}${this.whereClause}`;
+    return new Query(rawSqlCommand, QueryType.Update);
+  }
+}
+
+function wrapValue(value: number | string) {
+  if (typeof value === "string") {
+    return `'${value}'`;
+  }
+  return value;
 }

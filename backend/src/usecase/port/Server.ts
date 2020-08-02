@@ -1,11 +1,13 @@
 import { CreateHabit } from "../createHabit";
 import { FindHabit } from "../findHabit";
+import { UpdateHabit } from "../updateHabit";
 
 export type createServer = (
   createHabit: CreateHabit,
-  findHabit: FindHabit
+  findHabit: FindHabit,
+  updateHabit: UpdateHabit
 ) => Server;
 
 export interface Server {
-  initialize(port: number): void;
+  listen(port: number): void;
 }

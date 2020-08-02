@@ -40,4 +40,16 @@ export class SqliteHabitRepository implements HabitRepository {
       .insertOne();
     return this.db.executeQuery(query);
   }
+
+  async update(habit: Habit): Promise<void> {
+    const query = this.queryBuilder
+      .table(TABLE_NAME)
+      .set({
+        title: habit.title,
+        target: habit.target,
+        isGood: habit.isGood ? 1 : 0,
+      })
+      .update();
+    return this.db.executeQuery(query);
+  }
 }

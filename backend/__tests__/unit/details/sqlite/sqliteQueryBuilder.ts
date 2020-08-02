@@ -28,3 +28,17 @@ test("build insert", () => {
     "INSERT INTO table (firstKey, secondKey) VALUES ('firstValue', 10)"
   );
 });
+
+test("build update", () => {
+  const query = new SqliteQueryBuilder()
+    .table("table")
+    .set({
+      column1: "value1",
+      column2: 2,
+    })
+    .where("id = :id", { id: 3 })
+    .update();
+  expect(query.rawSqlCommand).toBe(
+    "UPDATE table SET column1 = 'value1', column2 = 2 WHERE id = 3"
+  );
+});
