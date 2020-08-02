@@ -91,6 +91,9 @@ function wrapValue(value: number | string) {
   if (typeof value === "string") {
     return `'${value}'`;
   }
+  if (value === undefined) {
+    return "NULL";
+  }
   return value.toString();
 }
 

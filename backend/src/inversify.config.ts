@@ -9,6 +9,7 @@ import { FindHabit } from "./usecase/findHabit";
 import { UpdateHabit } from "./usecase/updateHabit";
 import { Server } from "./usecase/port/Server";
 import { ExpressServer } from "./adapter/server/ExpressServer";
+import { DeleteHabit } from "./usecase/deleteHabit";
 
 const container = new Container();
 container.bind<Database>(TYPES.Database).to(SqliteDatabase).inSingletonScope();
@@ -17,6 +18,7 @@ container
   .to(SqliteHabitRepository);
 container.bind<CreateHabit>(TYPES.CreateHabit).to(CreateHabit);
 container.bind<FindHabit>(TYPES.FindHabit).to(FindHabit);
+container.bind<DeleteHabit>(TYPES.DeleteHabit).to(DeleteHabit);
 container.bind<UpdateHabit>(TYPES.UpdateHabit).to(UpdateHabit);
 container.bind<Server>(TYPES.Server).to(ExpressServer);
 

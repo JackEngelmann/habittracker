@@ -41,6 +41,7 @@ export class ExpressServer implements Server {
     // create habit
     this.app.post("/habit/", async (req, res) => {
       const createInput = req.body;
+      console.log(createInput);
       const createdId = await this.createHabit.create(createInput);
       const createdHabit = await this.findHabit.find(createdId);
       res.json(createdHabit);
