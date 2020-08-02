@@ -4,8 +4,9 @@ import { CreateHabit } from "../../usecase/createHabit";
 import { FindHabit } from "../../usecase/findHabit";
 import { UpdateHabit } from "../../usecase/updateHabit";
 import { Database } from "../../usecase/port/Database";
-import { inject, injectable } from "inversify";
+import { inject, injectable, typeConstraint } from "inversify";
 import { TYPES } from "../../types";
+import { DeleteHabit } from "../../usecase/deleteHabit";
 
 @injectable()
 export class ExpressServer implements Server {
@@ -15,7 +16,8 @@ export class ExpressServer implements Server {
     @inject(TYPES.Database) private database: Database,
     @inject(TYPES.CreateHabit) private createHabit: CreateHabit,
     @inject(TYPES.FindHabit) private findHabit: FindHabit,
-    @inject(TYPES.UpdateHabit) private updateHabit: UpdateHabit
+    @inject(TYPES.UpdateHabit) private updateHabit: UpdateHabit,
+    @inject(TYPES.DeleteHabit) private deleteHabit: DeleteHabit
   ) {
     this.app = express();
     this.app.use(express.json());
@@ -51,6 +53,14 @@ export class ExpressServer implements Server {
       await this.updateHabit.update(id, updateInput);
       const updatedHabit = await this.findHabit.find(id);
       res.json(updatedHabit);
+    });
+
+    // delete habit
+    this.app.delete("/habit/:id", async (req, res) => {
+      const id = parseInt(req.params.id);
+      await this.deleteHabit.delete(id);
+      res.status(204);
+      res.json();
     });
   }
 

@@ -4,23 +4,25 @@ import { CreateHabit } from "../../../../src/usecase/createHabit";
 import { SqliteHabitRepository } from "../../../../src/adapter/database/SqliteHabitRepository";
 import { SqliteDatabase } from "../../../../src/adapter/database/SqliteDatabase";
 import { FindHabit } from "../../../../src/usecase/findHabit";
-import { SqliteQueryBuilder } from "../../../../src/adapter/database/SqliteQueryBuilder";
 import supertest from "supertest";
 import { UpdateHabit } from "../../../../src/usecase/updateHabit";
+import { buildHabit } from "../../HabitBuilder";
+import { DeleteHabit } from "../../../../src/usecase/deleteHabit";
 
 async function createTestConfiguration() {
   const database = new SqliteDatabase();
   await database.createSchema();
-  const queryBuilder = new SqliteQueryBuilder();
-  const habitRepository = new SqliteHabitRepository(database, queryBuilder);
+  const habitRepository = new SqliteHabitRepository(database);
   const createHabit = new CreateHabit(habitRepository);
   const findHabit = new FindHabit(habitRepository);
   const updateHabit = new UpdateHabit(habitRepository);
+  const deleteHabit = new DeleteHabit(habitRepository);
   const server = new ExpressServer(
     database,
     createHabit,
     findHabit,
-    updateHabit
+    updateHabit,
+    deleteHabit
   );
   const request = supertest(server.app);
   return {
@@ -91,5 +93,14 @@ test("get all habits", async (done) => {
   const response = await request.get(`/habit/`);
   expect(response.status).toBe(200);
   expect(response.body).toHaveLength(2);
+  done();
+});
+
+test("delete habit", async (done) => {
+  const { request, createHabit } = await createTestConfiguration();
+  const habit = buildHabit().build();
+  const id = await createHabit.create(habit);
+  const response = await request.delete(`/habit/${id}`);
+  expect(response.status).toBe(204);
   done();
 });

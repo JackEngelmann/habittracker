@@ -5,6 +5,7 @@ export const TYPES = {
   CreateHabit: Symbol.for("CreateHabit"),
   FindHabit: Symbol.for("FindHabit"),
   UpdateHabit: Symbol.for("UpdateHabit"),
+  DeleteHabit: Symbol.for("DeleteHabit"),
 
   SqliteDatabase: Symbol.for("SqliteDatabase"),
 };
