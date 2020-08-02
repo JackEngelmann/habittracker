@@ -55,7 +55,6 @@ export class ExpressServer implements Server {
   }
 
   public async listen(port: number) {
-    await this.database.createSchema(); // TODO
     this.app.listen(port);
   }
 }
