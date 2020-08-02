@@ -1,19 +1,19 @@
 import { Habit } from "../../domain/entity/Habit";
-import { Database } from "../../details/Database";
+import { Database } from "../../usecase/port/Database";
 import { HabitRepository } from "../../usecase/port/HabitRepository";
 import { QueryBuilder } from "../../details/QueryBuilder";
 import { Id } from "../../domain/entity/Id";
+import { injectable, inject } from "inversify";
+import { TYPES } from "../../types";
 
 const TABLE_NAME = "habit";
 
+@injectable()
 export class SqliteHabitRepository implements HabitRepository {
-  db: Database;
-  queryBuilder: QueryBuilder;
-
-  constructor(db: Database, queryBuilder: QueryBuilder) {
-    this.db = db;
-    this.queryBuilder = queryBuilder;
-  }
+  constructor(
+    @inject(TYPES.Database) private db: Database,
+    @inject(TYPES.QueryBuilder) private queryBuilder: QueryBuilder
+  ) {}
 
   async get(id: Id): Promise<Habit> {
     const query = this.queryBuilder
@@ -50,6 +50,11 @@ export class SqliteHabitRepository implements HabitRepository {
         isGood: habit.isGood ? 1 : 0,
       })
       .update();
+    return this.db.executeQuery(query);
+  }
+
+  async getAll(): Promise<Habit[]> {
+    const query = this.queryBuilder.table(TABLE_NAME).select();
     return this.db.executeQuery(query);
   }
 }

@@ -1,19 +1,12 @@
-import { CreateHabit } from "../usecase/createHabit";
-import { FindHabit } from "../usecase/findHabit";
-import { createExpressServer } from "../adapter/server/ExpressServer";
-import { SqliteDatabase } from "../details/sqlite/SqliteDatabase";
-import { SqliteQueryBuilder } from "../details/sqlite/SqliteQueryBuilder";
-import { SqliteHabitRepository } from "../adapter/database/SqliteHabitRepository";
-import { UpdateHabit } from "../usecase/updateHabit";
+import "reflect-metadata";
+import { container } from "../inversify.config";
+import { Server } from "../usecase/port/Server";
+import { TYPES } from "../types";
+import { Database } from "../usecase/port/Database";
 
 const PORT = 3000;
 
-const database = new SqliteDatabase();
-const queryBuilder = new SqliteQueryBuilder();
-const habitRepository = new SqliteHabitRepository(database, queryBuilder);
-const createHabit = new CreateHabit(habitRepository);
-const findHabit = new FindHabit(habitRepository);
-const updateHabit = new UpdateHabit(habitRepository);
-const server = createExpressServer(createHabit, findHabit, updateHabit);
+const server = container.get<Server>(TYPES.Server);
+const database = container.get<Database>(TYPES.Database);
 
 database.createSchema().then(() => server.listen(PORT));

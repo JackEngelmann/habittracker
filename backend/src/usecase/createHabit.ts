@@ -1,6 +1,8 @@
 import { Id } from "../domain/entity/Id";
 import { Habit } from "../domain/entity/Habit";
 import { HabitRepository } from "./port/HabitRepository";
+import { injectable, inject } from "inversify";
+import { TYPES } from "../types";
 
 export type CreateHabitInput = {
   title: string;
@@ -8,12 +10,11 @@ export type CreateHabitInput = {
   target: number;
 };
 
+@injectable()
 export class CreateHabit {
-  private habitRepository: HabitRepository;
-
-  constructor(habitRepository: HabitRepository) {
-    this.habitRepository = habitRepository;
-  }
+  constructor(
+    @inject(TYPES.HabitRepository) private habitRepository: HabitRepository
+  ) {}
 
   async create(input: CreateHabitInput): Promise<Id> {
     const habit = new Habit({

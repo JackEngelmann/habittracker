@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { SqliteQueryBuilder } from "../../../../src/details/sqlite/SqliteQueryBuilder";
 
 test("build select", () => {

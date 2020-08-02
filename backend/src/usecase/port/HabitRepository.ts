@@ -5,4 +5,5 @@ export interface HabitRepository {
   add(habit: Habit): Promise<Id>;
   get(id: Id): Promise<Habit>;
   update(habit: Habit): Promise<void>;
+  getAll(): Promise<Habit[]>;
 }

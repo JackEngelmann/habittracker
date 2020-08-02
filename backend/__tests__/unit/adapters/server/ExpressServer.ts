@@ -1,7 +1,8 @@
+import "reflect-metadata";
 import { ExpressServer } from "../../../../src/adapter/server/ExpressServer";
 import { CreateHabit } from "../../../../src/usecase/createHabit";
 import { SqliteHabitRepository } from "../../../../src/adapter/database/SqliteHabitRepository";
-import { SqliteDatabase } from "../../../../src/details/sqlite/SqliteDatabase";
+import { SqliteDatabase } from "../../../../src/adapter/database/SqliteDatabase";
 import { FindHabit } from "../../../../src/usecase/findHabit";
 import { SqliteQueryBuilder } from "../../../../src/details/sqlite/SqliteQueryBuilder";
 import supertest from "supertest";
@@ -15,7 +16,12 @@ async function createTestConfiguration() {
   const createHabit = new CreateHabit(habitRepository);
   const findHabit = new FindHabit(habitRepository);
   const updateHabit = new UpdateHabit(habitRepository);
-  const server = new ExpressServer(createHabit, findHabit, updateHabit);
+  const server = new ExpressServer(
+    database,
+    createHabit,
+    findHabit,
+    updateHabit
+  );
   const request = supertest(server.app);
   return {
     createHabit,
@@ -67,5 +73,23 @@ test("update habit", async (done) => {
   const response = await request.put(`/habit/${id}`).send(updateInput);
   expect(response.status).toBe(200);
   expect(response.body).toEqual(expect.objectContaining(updateInput));
+  done();
+});
+
+test("get all habits", async (done) => {
+  const { request, createHabit } = await createTestConfiguration();
+  await createHabit.create({
+    title: "title",
+    isGood: true,
+    target: 10,
+  });
+  await createHabit.create({
+    title: "title",
+    isGood: true,
+    target: 10,
+  });
+  const response = await request.get(`/habit/`);
+  expect(response.status).toBe(200);
+  expect(response.body).toHaveLength(2);
   done();
 });

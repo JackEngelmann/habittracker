@@ -7,7 +7,7 @@ const common = require("./webpack.common.js");
 
 module.exports = merge(common, {
   devtool: "source-map",
-  entry: [path.join(__dirname, "src/bin/expressSqlite.ts")],
+  entry: [path.join(__dirname, "src/bin/app.ts")],
   externals: [nodeExternals({})],
   mode: "production",
   plugins: [new CleanWebpackPlugin()],

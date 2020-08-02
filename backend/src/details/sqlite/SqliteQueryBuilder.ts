@@ -1,6 +1,8 @@
 import { QueryBuilder } from "../QueryBuilder";
-import { Query, QueryType } from "../Query";
+import { Query, QueryType } from "../../usecase/port/Query";
+import { injectable } from "inversify";
 
+@injectable()
 export class SqliteQueryBuilder implements QueryBuilder {
   private tableName: string | undefined;
   private whereClause: string;
@@ -75,6 +77,11 @@ export class SqliteQueryBuilder implements QueryBuilder {
   update(): Query {
     const rawSqlCommand = `UPDATE ${this.tableName} ${this.setClause}${this.whereClause}`;
     return new Query(rawSqlCommand, QueryType.Update);
+  }
+
+  select(): Query {
+    const rawSqlCommand = `SELECT * FROM ${this.tableName}${this.whereClause}`;
+    return new Query(rawSqlCommand, QueryType.Select);
   }
 }
 

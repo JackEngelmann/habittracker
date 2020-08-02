@@ -8,10 +8,7 @@ const common = require("./webpack.common.js");
 
 module.exports = merge.smart(common, {
   devtool: "inline-source-map",
-  entry: [
-    "webpack/hot/poll?1000",
-    path.join(__dirname, "src/bin/expressSqlite.ts"),
-  ],
+  entry: ["webpack/hot/poll?1000", path.join(__dirname, "src/bin/app.ts")],
   externals: [
     nodeExternals({
       whitelist: ["webpack/hot/poll?1000"],

@@ -1,7 +1,8 @@
 import sqlite from "sqlite3";
-import { Database } from "../Database";
+import { Database } from "../../usecase/port/Database";
 import { Id } from "../../domain/entity/Id";
-import { Query, QueryType } from "../Query";
+import { Query, QueryType } from "../../usecase/port/Query";
+import { injectable } from "inversify";
 
 const CREATE_HABIT_TABLE_SQL = `
   CREATE TABLE IF NOT EXISTS habit (
@@ -12,6 +13,7 @@ const CREATE_HABIT_TABLE_SQL = `
   )
 `;
 
+@injectable()
 export class SqliteDatabase implements Database {
   database: sqlite.Database;
 
@@ -19,7 +21,7 @@ export class SqliteDatabase implements Database {
     this.database = new sqlite.Database(":memory:");
   }
 
-  async createSchema(): Promise<void> {
+  public async createSchema(): Promise<void> {
     await this.run(CREATE_HABIT_TABLE_SQL);
   }
 

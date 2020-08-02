@@ -1,4 +1,4 @@
-import { Query } from "./Query";
+import { Query } from "../usecase/port/Query";
 
 type Variables = Record<string, string | number>;
 
@@ -11,4 +11,5 @@ export interface QueryBuilder {
   selectOne(): Query;
   insertOne(): Query;
   update(): Query;
+  select(): Query;
 }
