@@ -4,6 +4,7 @@ export enum QueryType {
   Select,
   Update,
   Delete,
+  Run,
 }
 
 export class Query {

@@ -1,17 +1,8 @@
 import sqlite from "sqlite3";
-import { Database } from "../../usecase/port/Database";
-import { Id } from "../../domain/entity/Id";
-import { Query, QueryType } from "../../usecase/port/Query";
+import { Database } from "../../../usecase/port/Database";
+import { Id } from "../../../domain/entity/Id";
+import { Query, QueryType } from "../../../usecase/port/Query";
 import { injectable } from "inversify";
-
-const CREATE_HABIT_TABLE_SQL = `
-  CREATE TABLE IF NOT EXISTS habit (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title string NOT NULL,
-    isGood integer NOT NULL,
-    target integer NOT NULL
-  )
-`;
 
 @injectable()
 export class SqliteDatabase implements Database {
@@ -21,10 +12,6 @@ export class SqliteDatabase implements Database {
     this.database = new sqlite.Database(":memory:");
   }
 
-  public async createSchema(): Promise<void> {
-    await this.run(CREATE_HABIT_TABLE_SQL);
-  }
-
   public executeQuery(query: Query) {
     const queryHandlerByQueryType = {
       [QueryType.SelectOne]: this.selectOne,
@@ -32,6 +19,7 @@ export class SqliteDatabase implements Database {
       [QueryType.InsertOne]: this.insertOne,
       [QueryType.Update]: this.update,
       [QueryType.Delete]: this.delete,
+      [QueryType.Run]: this.run,
     };
     const handleQuery = queryHandlerByQueryType[query.type].bind(this);
     return handleQuery(query);
@@ -65,16 +53,16 @@ export class SqliteDatabase implements Database {
   }
 
   private async update(query: Query): Promise<void> {
-    this.run(query.rawSqlCommand);
+    this.run(query);
   }
 
   private async delete(query: Query): Promise<void> {
-    this.run(query.rawSqlCommand);
+    this.run(query);
   }
 
-  private run(rawSqlCommand: string): Promise<void> {
+  private run(query: Query): Promise<void> {
     return new Promise((resolve) => {
-      this.database.run(rawSqlCommand, (err) => {
+      this.database.run(query.rawSqlCommand, (err) => {
         if (err) console.error(err);
         resolve();
       });

@@ -1,12 +1,14 @@
 import "reflect-metadata";
-import { SqliteDatabase } from "../../../../src/adapter/database/SqliteDatabase";
-import { SqliteHabitRepository } from "../../../../src/adapter/database/SqliteHabitRepository";
+import { SqliteDatabase } from "../../../../src/adapter/database/sqlite/SqliteDatabase";
+import { SqliteHabitRepository } from "../../../../src/adapter/database/sqlite/SqliteHabitRepository";
 import { Habit } from "../../../../src/domain/entity/Habit";
 import { buildHabit } from "../../HabitBuilder";
+import { SqliteSchemaCreator } from "../../../../src/adapter/database/sqlite/SqliteSchemaCreator";
 
 async function initializeTest() {
   const database = new SqliteDatabase();
-  await database.createSchema();
+  const schemaCreator = new SqliteSchemaCreator(database);
+  await schemaCreator.createSchema();
   const repository = new SqliteHabitRepository(database);
   return { repository };
 }

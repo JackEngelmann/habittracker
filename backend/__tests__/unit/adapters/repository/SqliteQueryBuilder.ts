@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { SqliteQueryBuilder } from "../../../../src/adapter/database/SqliteQueryBuilder";
+import { SqliteQueryBuilder } from "../../../../src/adapter/database/sqlite/SqliteQueryBuilder";
 
 test("build select", () => {
   const query = new SqliteQueryBuilder().table("table").selectOne();

@@ -2,11 +2,11 @@ import "reflect-metadata";
 import { container } from "../inversify.config";
 import { Server } from "../usecase/port/Server";
 import { TYPES } from "../types";
-import { Database } from "../usecase/port/Database";
+import { SchemaCreator } from "../usecase/port/SchemaCreator";
 
 const PORT = 3001;
 
 const server = container.get<Server>(TYPES.Server);
-const database = container.get<Database>(TYPES.Database);
+const schemaCreator = container.get<SchemaCreator>(TYPES.SchemaCreator);
 
-database.createSchema().then(() => server.listen(PORT));
+schemaCreator.createSchema().then(() => server.listen(PORT));

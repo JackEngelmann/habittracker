@@ -1,4 +1,4 @@
-import { Query, QueryType } from "../../usecase/port/Query";
+import { Query, QueryType } from "../../../usecase/port/Query";
 
 export class SqliteQueryBuilder {
   private tableName: string | undefined;

@@ -1,29 +1,50 @@
 import "reflect-metadata";
 import { ExpressServer } from "../../../../src/adapter/server/ExpressServer";
 import { CreateHabit } from "../../../../src/usecase/createHabit";
-import { SqliteHabitRepository } from "../../../../src/adapter/database/SqliteHabitRepository";
-import { SqliteDatabase } from "../../../../src/adapter/database/SqliteDatabase";
+import { SqliteHabitRepository } from "../../../../src/adapter/database/sqlite/SqliteHabitRepository";
+import { SqliteDatabase } from "../../../../src/adapter/database/sqlite/SqliteDatabase";
 import { FindHabit } from "../../../../src/usecase/findHabit";
 import supertest from "supertest";
 import { UpdateHabit } from "../../../../src/usecase/updateHabit";
 import { buildHabit } from "../../HabitBuilder";
 import { DeleteHabit } from "../../../../src/usecase/deleteHabit";
+import { ExpressHabitController } from "../../../../src/adapter/controller/express/ExpressHabitController";
+import { ExpressHabitLogController } from "../../../../src/adapter/controller/express/ExpressHabitLogController";
+import { CreateHabitLog } from "../../../../src/usecase/createHabitLog";
+import { SqliteHabitLogRepository } from "../../../../src/adapter/database/sqlite/SqliteHabitLogRepository";
+import { FindHabitLog } from "../../../../src/usecase/findHabitLog";
+import { UpdateHabitLog } from "../../../../src/usecase/updateHabitLog";
+import { DeleteHabitLog } from "../../../../src/usecase/deleteHabitLog";
+import { SqliteSchemaCreator } from "../../../../src/adapter/database/sqlite/SqliteSchemaCreator";
 
 async function createTestConfiguration() {
   const database = new SqliteDatabase();
-  await database.createSchema();
+  const schemaCreator = new SqliteSchemaCreator(database);
+  await schemaCreator.createSchema();
   const habitRepository = new SqliteHabitRepository(database);
+  const habitLogRepository = new SqliteHabitLogRepository(database);
   const createHabit = new CreateHabit(habitRepository);
   const findHabit = new FindHabit(habitRepository);
   const updateHabit = new UpdateHabit(habitRepository);
   const deleteHabit = new DeleteHabit(habitRepository);
-  const server = new ExpressServer(
-    database,
+  const habitController = new ExpressHabitController(
     createHabit,
     findHabit,
     updateHabit,
     deleteHabit
   );
+
+  const createHabitLog = new CreateHabitLog(habitLogRepository);
+  const findHabitLog = new FindHabitLog(habitLogRepository);
+  const updateHabitLog = new UpdateHabitLog(habitLogRepository);
+  const deleteHabitLog = new DeleteHabitLog(habitLogRepository);
+  const habitLogController = new ExpressHabitLogController(
+    createHabitLog,
+    findHabitLog,
+    updateHabitLog,
+    deleteHabitLog
+  );
+  const server = new ExpressServer(habitController, habitLogController);
   const request = supertest(server.app);
   return {
     createHabit,
