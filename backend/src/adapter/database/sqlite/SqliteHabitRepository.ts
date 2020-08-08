@@ -5,7 +5,6 @@ import { Id } from "../../../domain/entity/Id";
 import { injectable, inject } from "inversify";
 import { TYPES } from "../../../types";
 import { createSqliteQueryBuilder } from "./SqliteQueryBuilder";
-import { relativeTimeThreshold } from "moment";
 
 const TABLE_NAME = "habit";
 

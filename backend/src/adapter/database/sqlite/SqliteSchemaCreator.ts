@@ -17,7 +17,8 @@ const CREATE_HABITLOG_TABLE_SQL = `
   CREATE TABLE IF NOT EXISTS habitlog (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     date string NOT NULL,
-    amount integer NOT NULL
+    amount integer NOT NULL,
+    habitId integer NOT NULL
   )
 `;
 

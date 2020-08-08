@@ -38,7 +38,6 @@ test("create and get a habit", async (done) => {
 });
 
 test("update a habit", async (done) => {
-  // arrange
   const { repository } = await initializeTest();
   const originalHabit = new Habit({
     title: "create",
@@ -53,11 +52,9 @@ test("update a habit", async (done) => {
     target: 20,
   });
 
-  // act
   await repository.update(updatedHabit);
   const updatedHabitFromRepository = await repository.get(id);
 
-  // assert
   expect(updatedHabitFromRepository.title).toBe(updatedHabit.title);
   expect(updatedHabitFromRepository.isGood).toBe(updatedHabit.isGood);
   expect(updatedHabitFromRepository.target).toBe(updatedHabit.target);

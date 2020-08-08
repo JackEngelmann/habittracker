@@ -60,7 +60,7 @@ export class SqliteDatabase implements Database {
     this.run(query);
   }
 
-  private run(query: Query): Promise<void> {
+  private async run(query: Query): Promise<void> {
     return new Promise((resolve) => {
       this.database.run(query.rawSqlCommand, (err) => {
         if (err) console.error(err);

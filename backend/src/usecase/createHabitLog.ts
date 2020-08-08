@@ -8,6 +8,7 @@ import moment from "moment";
 export type CreateHabitLogInput = {
   date: string; // TODO: or moment?
   amount: number;
+  habitId: Id;
 };
 
 @injectable()
@@ -21,6 +22,7 @@ export class CreateHabitLog {
     const habitLog = new HabitLog({
       date: moment(input.date),
       amount: input.amount,
+      habitId: input.habitId,
     });
     return this.habitLogRepository.add(habitLog);
   }

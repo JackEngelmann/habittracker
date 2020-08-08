@@ -18,9 +18,10 @@ export class SqliteHabitLogRepository implements HabitLogRepository {
       .values({
         amount: habitLog.amount,
         date: habitLog.date.toISOString(),
+        habitId: habitLog.habitId,
       })
       .insertOne();
-    return this.db.executeQuery(query);
+    return await this.db.executeQuery(query);
   }
 
   async get(id: number): Promise<HabitLog> {
@@ -38,6 +39,7 @@ export class SqliteHabitLogRepository implements HabitLogRepository {
       .set({
         date: habitLog.date.toISOString(),
         amount: habitLog.amount,
+        habitId: habitLog.habitId,
       })
       .update();
     return this.db.executeQuery(query);
@@ -62,6 +64,7 @@ export class SqliteHabitLogRepository implements HabitLogRepository {
       id: row.id,
       date: moment(row.date),
       amount: row.amount,
+      habitId: row.habitId,
     });
   }
 }
