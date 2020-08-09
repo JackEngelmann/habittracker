@@ -1,10 +1,10 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useContext } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { useHabit } from "../api/useHabit";
 import styled from "styled-components";
 import { HomeButton } from "../components/HomeButton";
 import { DeleteButton } from "../components/DeleteButton";
-import { deleteHabit } from "../api/deleteHabit";
+import { ApiContext } from "../api/ApiContext";
 
 type Params = {
   id: string;
@@ -19,6 +19,7 @@ const Header = styled.div``;
 const ScrollingContent = styled.div``;
 
 export function HabitPage() {
+  const { deleteHabit } = useContext(ApiContext);
   const params = useParams<Params>();
   const id = parseInt(params.id);
   const [habit] = useHabit(id);

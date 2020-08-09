@@ -1,9 +1,9 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useContext } from "react";
 import { CreateHabitForm } from "../components/CreateHabitForm";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
-import { createHabit } from "../api/createHabit";
 import { HomeButton } from "../components/HomeButton";
+import { ApiContext } from "../api/ApiContext";
 
 const Root = styled.div`
   padding: 3em 4em;
@@ -34,6 +34,7 @@ const SaveButton = styled.button`
 `;
 
 export function CreateHabitPage() {
+  const { createHabit } = useContext(ApiContext);
   const [createInput, setCreateInput] = useState({
     title: "",
     isGood: true,
