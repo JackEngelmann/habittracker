@@ -25,6 +25,6 @@ const Home = styled.button`
 
 export function HomeButton() {
   const history = useHistory();
-  const goHome = useCallback(() => history.push("/"), []);
+  const goHome = useCallback(() => history.push("/"), [history]);
   return <Home onClick={goHome}>H</Home>;
 }

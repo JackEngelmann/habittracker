@@ -7,4 +7,5 @@ export interface HabitLogRepository {
   update(habitLog: HabitLog): Promise<void>;
   getAll(): Promise<HabitLog[]>;
   delete(id: Id): Promise<void>;
+  getForHabit(habitId: Id): Promise<HabitLog[]>;
 }

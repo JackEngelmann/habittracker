@@ -41,12 +41,12 @@ export function CreateHabitPage() {
     target: 0,
   });
   const history = useHistory();
-  const cancel = useCallback(() => history.push("/habit/"), []);
+  const cancel = useCallback(() => history.push("/habit/"), [history]);
   const create = useCallback(async () => {
     setIsInProgress(true);
     await createHabit(createInput);
     history.push("/habit/");
-  }, [createInput]);
+  }, [createInput, createHabit, history]);
   const [isInProgress, setIsInProgress] = useState(false);
   return (
     <Root>

@@ -18,4 +18,8 @@ export class FindHabitLog {
   async getAll(): Promise<HabitLog[]> {
     return this.habitLogRepository.getAll();
   }
+
+  async getForHabit(habitId: Id): Promise<HabitLog[]> {
+    return this.habitLogRepository.getForHabit(habitId);
+  }
 }

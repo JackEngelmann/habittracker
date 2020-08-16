@@ -1,14 +1,14 @@
 import { useState, useEffect, useContext } from "react";
 import { Habit } from "./types";
 import { ApiContext } from "./ApiContext";
+import { useReload } from "./useReload";
 
 export function useHabits(): [Habit[], () => void] {
   const { getAllHabits } = useContext(ApiContext);
   const [habits, setHabits] = useState<Habit[]>([]);
-  const [reloadCounter, setReloadCounter] = useState(0);
+  const [reloadCounter, reload] = useReload();
   useEffect(() => {
     getAllHabits().then(setHabits);
-  }, [reloadCounter]);
-  const reload = () => setReloadCounter((counter) => counter + 1);
+  }, [reloadCounter, getAllHabits]);
   return [habits, reload];
 }

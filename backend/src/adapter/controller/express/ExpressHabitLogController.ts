@@ -26,6 +26,12 @@ export class ExpressHabitLogController {
     res.json(habitLog);
   };
 
+  handleGetForHabit = async (req: Request, res: Response) => {
+    const habitId = parseInt(req.params.habitId);
+    const habitLog = await this.findHabitLog.getForHabit(habitId);
+    res.json(habitLog);
+  };
+
   handleCreate = async (req: Request, res: Response) => {
     const createInput = req.body;
     const createdId = await this.createHabitLog.create(createInput);

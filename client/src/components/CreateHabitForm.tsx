@@ -47,6 +47,7 @@ export function CreateHabitForm(props: Props) {
       <TitleInput
         placeholder="My habit"
         value={value.title}
+        autoFocus
         onChange={(e) =>
           onChange({
             ...value,

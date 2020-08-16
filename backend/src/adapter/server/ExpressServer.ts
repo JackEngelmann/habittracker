@@ -37,6 +37,10 @@ export class ExpressServer implements Server {
     habitRoutes.post(`/`, this.habitController.handleCreate);
     habitRoutes.put(`/:id`, this.habitController.handleUpdate);
     habitRoutes.delete(`/:id`, this.habitController.handleDelete);
+    habitRoutes.get(
+      `/:habitId/habitlogs`,
+      this.habitLogController.handleGetForHabit
+    );
     return habitRoutes;
   }
 

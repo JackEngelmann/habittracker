@@ -34,9 +34,11 @@ const Habit = styled.button`
 `;
 
 export function HomePage() {
-  const [habits, reloadHabits] = useHabits();
+  const [habits] = useHabits();
   const history = useHistory();
-  const createHabit = useCallback(() => history.push("/habit/create"), []);
+  const createHabit = useCallback(() => history.push("/habit/create"), [
+    history,
+  ]);
 
   return (
     <Root>

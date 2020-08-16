@@ -12,6 +12,15 @@ const TABLE_NAME = "habitlog";
 export class SqliteHabitLogRepository implements HabitLogRepository {
   constructor(@inject(TYPES.Database) private db: Database) {}
 
+  async getForHabit(habitId: number): Promise<HabitLog[]> {
+    const query = createSqliteQueryBuilder()
+      .table(TABLE_NAME)
+      .where("habitId = :habitId", { habitId })
+      .select();
+    const rows: any[] = await this.db.executeQuery(query);
+    return rows.map((row) => this.rowToHabitLog(row));
+  }
+
   async add(habitLog: HabitLog): Promise<number> {
     const query = createSqliteQueryBuilder()
       .table(TABLE_NAME)
